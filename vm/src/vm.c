@@ -7,8 +7,8 @@ int vm_initialize (struct _vm * vm) {
         vm->reg[i] = 0x00000000;
     }
     
-    vm->reg[RSP] = VM_MEMORY_SIZE;
-    vm->reg[RBP] = VM_MEMORY_SIZE;
+    vm->reg[RSP] = VM_MEMORY_SIZE - 4;
+    vm->reg[RBP] = VM_MEMORY_SIZE - 4;
     vm->IP = 0;
     vm->FLAGS = 0;
     

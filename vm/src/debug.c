@@ -57,6 +57,48 @@ const char * debug_register_description (const unsigned char reg) {
 }
 
 
+int debug_instruction_size (const unsigned char instruction) {
+    switch (instruction) {
+        case OP_ADDR :
+        case OP_SUB :
+        case OP_MUL :
+        case OP_DIV :
+        case OP_MOD :
+        case OP_MOVL :
+        case OP_MOVS :
+        case OP_MOVR :
+        case OP_CMPR :
+        case OP_ANDR :
+        case OP_ORR  :
+        case OP_XORR :
+            return 3;
+        case OP_MOVC :
+        case OP_ADDC :
+        case OP_CMPC :
+        case OP_ANDC :
+        case OP_ORC  :
+        case OP_XORC :
+            return 6;
+        case OP_JMP :
+        case OP_JZ :
+        case OP_JE :
+        case OP_JG :
+        case OP_CALL :
+            return 5;
+        case OP_RET :
+        case OP_HLT :
+        case OP_NOP :
+            return 1;
+        case OP_PUSH :
+        case OP_POP :
+            return 2;
+    }
+    fprintf(stderr, "invalid instruction to debug_instruction_size %d\n",
+            (int) instruction);
+    return -1;
+}
+
+
 char instruction_description[32];
 const char * debug_instruction_description (const unsigned char * instruction) {
     char tmp[32];

@@ -3,12 +3,14 @@
 #include <unistd.h>
 
 #include "debug.h"
+#include "god_mode.h"
 #include "image.h"
 #include "vm.h"
 
 int main (int argc, char * argv[]) {
     char * filename = NULL;
     char * output_filename = NULL;
+    int opt_god_mode = 0;
     int c;
     int memory_view_offset = VM_MEMORY_SIZE - 32;
     int memory_view_bytes  = 32;
@@ -17,10 +19,13 @@ int main (int argc, char * argv[]) {
     int error;
     struct _vm * vm;
     
-    while ((c = getopt(argc, argv, "b:i:m:o:sp")) != -1) {
+    while ((c = getopt(argc, argv, "b:gi:m:o:sp")) != -1) {
         switch (c) {
             case 'b' :
                 memory_view_bytes = strtol(optarg, NULL, 16);
+                break;
+            case 'g' :
+                opt_god_mode = 1;
                 break;
             case 'i' :
                 filename = optarg;
@@ -71,18 +76,23 @@ int main (int argc, char * argv[]) {
         exit(error);
     }
     
-    if (step | print_info)
-        vm->step = 1;
+    if (opt_god_mode) {
+        god_mode(vm);
+    }
+    else {    
+        if (step | print_info)
+            vm->step = 1;
 
-    while (vm_run(vm)) {
-        if (print_info) {
-            printf("%s\n", debug_instruction_description(&(vm->memory[vm->IP])));
-            debug_view_memory(vm,
-                              memory_view_offset,
-                              memory_view_bytes);
-            debug_view_registers(vm);
+        while (vm_run(vm)) {
+            if (print_info) {
+                printf("%s\n", debug_instruction_description(&(vm->memory[vm->IP])));
+                debug_view_memory(vm,
+                                  memory_view_offset,
+                                  memory_view_bytes);
+                debug_view_registers(vm);
+            }
+            if (step) getc(stdin);
         }
-        if (step) getc(stdin);
     }
     
     if (output_filename != NULL) {

@@ -18,11 +18,12 @@ int image_load (struct _vm * vm, const char * filename) {
         return ERROR_IMAGE_TOO_BIG;
     }
     
-    read = fread(vm->memory, filesize, 1, fh);
+    read = fread(vm->memory, 1, filesize, fh);
+    vm->text_size = read;
     
     fclose(fh);
     
-    if (read != 1)
+    if (read != filesize)
         return ERROR_IMAGE_FILE_IO;
     return 0;
 }

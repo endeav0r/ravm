@@ -6,7 +6,7 @@
 
 #include "error.h"
 
-#define VM_MEMORY_SIZE 0x00001000
+#define VM_MEMORY_SIZE 0x00000200
 
 #define OP_ADDR 0x01
 #define OP_SUB  0x02
@@ -60,6 +60,8 @@ struct _vm {
     int reg[10];
     int IP;
     int FLAGS;
+    
+    int text_size; // size of the .TEXT portion, in bytes (set when load)
     
     struct _bp * last_bp; // address of last bp we broke on
     struct _bp * bps;
