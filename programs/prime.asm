@@ -6,6 +6,7 @@ main :
 main_loop :
     push r1
     call check_for_prime
+    add RSP, 4
     
     mov r2, rbp
     mov r3, r1
