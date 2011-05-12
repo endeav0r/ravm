@@ -1,0 +1,243 @@
+<html>
+
+<style>
+    a:link, a:visited, a:active {
+        color: #00009F;
+        text-decoration: none;
+    }
+    a:hover {
+        color: #0000FF;
+        text-decoration: underline;
+    }
+
+    body, div, td {
+        font-family: Arial;
+        font-size: 12pt;
+    }
+
+    h1, h2, h3 { margin: 0px; }
+    
+    #content {
+        width: 780px;
+        padding: 8px;
+        margin: auto;
+        background-color: #EFFFEF;
+        border: 1px solid black;
+    }
+    
+    .code {
+        background-color: #000000;
+        color: #ff9900;
+        font-family: Courier New, Monospace;
+        font-size: 12pt;
+        font-weight: bold;
+        padding: 8px;
+        display: block;
+        margin: auto;
+        width: 640px;
+    }
+        
+    
+    .instruction_table {
+        background-color: #FFEFDF;
+        border-right: 1px solid black;
+        border-left: 1px solid black;
+        text-align: center;
+        width: 20%;
+    }
+</style>
+
+<body>
+    <div id="content">
+        <h1 align="center">Rainbowsandpwnies<br />Assembler and Virtual Machine</h2>
+        The Rainbowsandpwnies Assembler and Virtual Machine (RAVM) is a set of tools
+        designed to teach assembly-level programming to students new to the concept.
+        These tools are designed to be ease the process of learning x86 assembler,
+        and the RAVM can be thought of as implementing a simple subset of the x86
+        instruction set.
+        <br />
+        <br />
+        The goals for the RAVM instruction set are:
+        <ul>
+            <li>Small enough for students to fully comprehend</li>
+            <li>Similar in format to the x86 instruction set</li>
+            <li>32-bit words</li>
+        </ul>
+        <div style="margin: auto; width:200px; text-align: center;">
+            <h1>Contents</h1>
+            <div  style="text-align: left">
+                <ul>
+                    <li><a href="#instruction_set">Instruction Set</a></li>
+                    <li><a href="#registers">Registers</a></li>
+                    <li><a href="#example_programs">Example Programs</a></li>
+                </ul>
+            </div>
+        </div>
+        <a name="instruction_set"></a>
+        <h1 align="center">Instruction Set</h2>
+        <table width="100%" margin="6" padding="6">
+            <tr>
+                <td valign="top" class="instruction_table">
+                    <h2>Arithmetic</h2>
+                    <br />
+                    <h3>ADD</h3>
+                    <strong>add</strong> rd, rs<br />
+                    <strong>add</strong> rd, constant<br />
+                    <br/>
+                    <h3>SUB</h3>
+                    <strong>sub</strong> rd, rs<br />
+                    <br/>
+                    <h3>MUL</h3>
+                    <strong>mul</strong> rd, rs<br />
+                    <br/>
+                    <h3>DIV</h3>
+                    <strong>div</strong> rd, rs<br />
+                    <br/>
+                    <h3>MOD</h3>
+                    <strong>mod</strong> rd, rs<br />
+                    <br/>
+                    <h3>CMP</h3>
+                    <strong>mod</strong> rd, rs<br />
+                    <strong>mod</strong> rd, constant<br />
+                    <br/>
+                </td>
+                <td valign="top" class="instruction_table">
+                    <h2>Logic</h2>
+                    <br />
+                    <h3>AND</h3>
+                    <strong>and</strong> rd, rs<br />
+                    <strong>and</strong> rd, constant<br />
+                    <br/>
+                    <h3>OR</h3>
+                    <strong>and</strong> rd, rs<br />
+                    <strong>and</strong> rd, constant<br />
+                    <br/>
+                    <h3>XOR</h3>
+                    <strong>and</strong> rd, rs<br />
+                    <strong>and</strong> rd, constant<br />
+                    <br/>
+                </td>
+                <td valign="top" class="instruction_table">
+                    <h2>Transfer</h2>
+                    <br />
+                    <h3>MOV</h3>
+                    <strong>mov</strong> rd, rs<br />
+                    <strong>mov</strong> rd, constant<br />
+                    <strong>mov</strong> [rd], rs<br />
+                    <strong>mov</strong> rd, [rs]<br />
+                    <br/>
+                    <h3>PUSH</h3>
+                    <strong>push</strong> rs<br />
+                    <br/>
+                    <h3>POP</h3>
+                    <strong>pop</strong> rd<br />
+                    <br/>
+                </td>
+                <td valign="top" class="instruction_table">
+                    <h2>Jumps</h2>
+                    <br />
+                    <h3>CALL</h3>
+                    <strong>call</strong> label<br />
+                    <br/>
+                    <h3>RET</h3>
+                    <strong>ret</strong><br />
+                    <br/>
+                    <h3>JMP</h3>
+                    <strong>jmp</strong> label<br />
+                    <br/>
+                    <h3>JZ</h3>
+                    <strong>jz</strong> label<br />
+                    <br/>
+                    <h3>JE</h3>
+                    <strong>je</strong> label<br />
+                    <br/>
+                    <h3>JG</h3>
+                    <strong>jg</strong> label<br />
+                    <br/>
+                    
+                </td>
+                <td valign="top" class="instruction_table">
+                    <h2>Other</h2>
+                    <br />
+                    <h3>NOP</h3>
+                    <strong>nop</strong><br />
+                </td>
+            </tr>
+        </table>
+        <br />
+        <a name="registers"></a>
+        <h1 align="center">Registers</h2>
+        <h3 align="center">r1, r2, r3, r4, r5, r6, r7, rsp, rbp</h3>
+        <br />
+        <a name="example_programs"></a>
+        <h1 align="center">Example Assembly Programs</h1>
+        <h2 align="center">Prime Finder</h2>
+        <pre class="code">
+main :
+    mov rbp, rsp
+    add rsp, -40
+    mov r1, 2
+
+main_loop :
+    push r1
+    call check_for_prime
+    
+    mov r2, rbp
+    mov r3, r1
+    mov r4, 4
+    mul r3, r4
+    sub r2, r3
+    mov [r2], r0
+    
+    add r1, 1
+    cmp r1, 10
+    je main_hlt
+    jmp main_loop
+
+
+main_hlt :
+    hlt
+
+check_for_prime :
+    push rbp
+    mov rbp, rsp
+    
+    push r1
+    push r2
+    
+    mov r0, rbp
+    add r0, 8
+    mov r0, [r0]
+    
+    mov r1, 2 ; r1 is the number we check against r0
+    
+check_for_prime_loop :
+    mov r2, r1
+    mul r2, r2
+    cmp r2, r0
+    jg check_for_prime_return_true
+    
+    mov r2, r0
+    mod r2, r1
+    cmp r2, 0
+    jz check_for_prime_return_false
+    
+    add r1, 1
+    jmp check_for_prime_loop
+    
+check_for_prime_return_false :
+    mov r0, -1
+    jmp check_for_prime_return
+
+check_for_prime_return_true :
+    mov r0, 1
+    jmp check_for_prime_return
+    
+check_for_prime_return :
+    pop r2
+    pop r1
+    pop rbp
+    ret</pre>
+    </div>
+</body>
+</html>
