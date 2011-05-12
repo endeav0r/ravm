@@ -140,6 +140,7 @@ int vm_run (struct _vm * vm) {
                     break;
                 case OP_XORR :
                     vm->reg[rd] ^= vm->reg[rs];
+                    break;
                 case OP_MOVR :
                     vm->reg[rd] = vm->reg[rs];
                     break;
