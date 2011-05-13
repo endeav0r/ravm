@@ -50,18 +50,25 @@
 <body>
     <div id="content">
         <h1 align="center">Rainbowsandpwnies<br />Assembler and Virtual Machine</h2>
-        The Rainbowsandpwnies Assembler and Virtual Machine (RAVM) is a set of tools
-        designed to teach assembly-level programming to students new to the concept.
-        These tools are designed to be ease the process of learning x86 assembler,
-        and the RAVM can be thought of as implementing a simple subset of the x86
-        instruction set.
-        <br />
-        <br />
-        The goals for the RAVM instruction set are:
+        
+        RAVM is a set of tools designed to help teach assembly level programming to 
+        students. It consists of a Virtual Machine implemented in software, with 
+        an instruction set that mimics many of the conventions in 32-bit x86 assembly,
+        and a corresponding assembler. The virtual machine is referred to
+        as the RAVM, and the assembler as the RAVM Assembler (yes, we know that's
+        assembler twice).<br/>
+        <br/>
+        The goals of RAVM are:
         <ul>
-            <li>Small enough for students to fully comprehend</li>
-            <li>Similar in format to the x86 instruction set</li>
-            <li>32-bit words</li>
+            <li>Implement a subset of the x86 instruction set capable of grasping
+                by students new to assembly.</li>
+            <li>Maintain 32-bit little-endian words.</li>
+            <li>Keep the toolchain simple. Students should be learning assembly,
+                <em>not features</em>.</li>
+            <li>Provide a method for students to monitor the state of the RAVM
+                as their assembly programs run.</li>
+            <li>Introduce students to basic debugger use such as stepping and
+                breakpoints.</li>
         </ul>
         <div style="margin: auto; width:200px; text-align: center;">
             <h1>Contents</h1>
@@ -69,6 +76,7 @@
                 <ul>
                     <li><a href="#instruction_set">Instruction Set</a></li>
                     <li><a href="#registers">Registers</a></li>
+                    <li><a href="#god_mode">God Mode</a></li>
                     <li><a href="#example_programs">Example Programs</a></li>
                 </ul>
             </div>
@@ -165,10 +173,54 @@
             </tr>
         </table>
         <br />
+        
         <a name="registers"></a>
         <h1 align="center">Registers</h2>
         <h3 align="center">r1, r2, r3, r4, r5, r6, r7, rsp, rbp</h3>
         <br />
+        
+        <a name="god_mode"></a>
+        <h1 align="center">God Mode</h2>
+        <div style="text-align: center">
+            <img src="ravm_god_mode.png" />
+        </div>
+        <br />
+        One interesting feature of the RAVM is God Mode. God Mode allows students
+        to observe the entire state of the RAVM during execution of their
+        assembled programs. Different areas of the memory are color-coded to
+        quickly distinguish what pieces of memory are being used for what
+        purposes by the RAVM.<br/>        
+        <br />
+        RAVM God Mode Legend
+        <table>
+            <tr>
+                <td style="background-color: #06989a; color: #ffffff;">
+                    CYAN: .TEXT, or Instructions
+                </td>
+            </tr><tr>
+                <td style="background-color: #4e9a06; color: #ffffff;">
+                    GREEN: Next Instruction to Execute
+                </td>
+            </tr><tr>
+                <td style="background-color: #cc0004; color: #ffffff;">
+                    RED: Memory pointed to by Stack Pointer
+                </td>
+            </tr><tr>
+                <td style="background-color: #75507b; color: #ffffff;">
+                    MAGENTA: Memory pointed to be Base Pointer
+                </td>
+            </tr><tr>
+                <td style="background-color: #3465a4; color: #ffffff;">
+                    BLUE: Call Stack
+                </td>
+            </tr><tr>
+                <td style="background-color: #c4a000; color: #ffffff;">
+                    YELLOW: User Cursor
+                </td>
+            </tr>
+        </table>
+        <br />
+        
         <a name="example_programs"></a>
         <h1 align="center">Example Assembly Programs</h1>
         <h2 align="center">Prime Finder</h2>
@@ -181,6 +233,7 @@ main :
 main_loop :
     push r1
     call check_for_prime
+    add RSP, 4
     
     mov r2, rbp
     mov r3, r1
