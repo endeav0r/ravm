@@ -20,6 +20,9 @@
 #define OP_ORC  0x0A
 #define OP_XORR 0x0B
 #define OP_XORC 0x0C
+#define OP_MULC 0x0D
+#define OP_DIVC 0x0E
+#define OP_MODC 0x0F
 #define OP_MOVC 0x10
 #define OP_MOVR 0x11
 #define OP_MOVL 0x12

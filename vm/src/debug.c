@@ -74,6 +74,9 @@ int debug_instruction_size (const unsigned char instruction) {
             return 3;
         case OP_MOVC :
         case OP_ADDC :
+        case OP_MULC :
+        case OP_DIVC :
+        case OP_MODC :
         case OP_CMPC :
         case OP_ANDC :
         case OP_ORC  :
@@ -111,13 +114,16 @@ const char * debug_instruction_description (const unsigned char * instruction) {
         case OP_SUB :
             strcpy(instruction_description, "SUB ");
             break;
-        case OP_MUL :
+        case OP_MUL  :
+        case OP_MULC :
             strcpy(instruction_description, "MUL ");
             break;
-        case OP_DIV :
+        case OP_DIV  :
+        case OP_DIVC :
             strcpy(instruction_description, "DIV ");
             break;
-        case OP_MOD :
+        case OP_MOD  :
+        case OP_MODC :
             strcpy(instruction_description, "MOD ");
             break;
         case OP_MOVC :
@@ -174,6 +180,9 @@ const char * debug_instruction_description (const unsigned char * instruction) {
             strcat(instruction_description, debug_register_description(instruction[2]));
             break;
         case OP_ADDC :
+        case OP_MULC :
+        case OP_DIVC :
+        case OP_MODC :
         case OP_MOVC :
         case OP_CMPC :
             strcat(instruction_description, debug_register_description(instruction[1]));

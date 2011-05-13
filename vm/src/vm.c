@@ -191,6 +191,9 @@ int vm_run (struct _vm * vm) {
                 break;
             // |op|rd|co|ns|ta|nt|
             case OP_ADDC :
+            case OP_MULC :
+            case OP_DIVC :
+            case OP_MODC :
             case OP_ANDC :
             case OP_ORC  :
             case OP_XORC :
@@ -205,6 +208,15 @@ int vm_run (struct _vm * vm) {
                 switch (op) {
                     case OP_ADDC :
                         vm->reg[rd] += constant;
+                        break;
+                    case OP_MULC :
+                        vm->reg[rd] *= constant;
+                        break;
+                    case OP_DIVC :
+                        vm->reg[rd] /= constant;
+                        break;
+                    case OP_MODC :
+                        vm->reg[rd] %= constant;
                         break;
                     case OP_ANDC :
                         vm->reg[rd] &= constant;
