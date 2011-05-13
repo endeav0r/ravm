@@ -51,9 +51,10 @@ void lexer_init () {
     lexer_match_set(&(matches[29]), ":"  ,  TOKEN_COLON);
     lexer_match_set(&(matches[30]), "\n" ,  TOKEN_TERMINATOR);
     lexer_match_set(&(matches[31]), ","  ,  TOKEN_SEPERATOR);
-    lexer_match_set(&(matches[32]), "and"  ,  TOKEN_AND);
-    lexer_match_set(&(matches[33]), "or"  ,  TOKEN_OR);
-    lexer_match_set(&(matches[34]), "xor"  ,  TOKEN_XOR);
+    lexer_match_set(&(matches[32]), "and",  TOKEN_AND);
+    lexer_match_set(&(matches[33]), "or",   TOKEN_OR);
+    lexer_match_set(&(matches[34]), "xor",  TOKEN_XOR);
+    lexer_match_set(&(matches[35]), "db",   TOKEN_DB);
 }
 
 
@@ -130,21 +131,39 @@ struct _token * lexer_token_create (const char * text, int line) {
     
     return token;
 }
-        
+
+
+struct _token * lexer_token_string (const char * string, int length, int line) {
+    struct _token * token;
+    
+    token = (struct _token *) malloc(sizeof(struct _token));
+    token->type = TOKEN_STRING;
+    token->text = (char *) malloc(length + 1);
+    strcpy(token->text, string);
+    token->line = line;
+    token->next = NULL;
+    
+    return token;
+}
+
 
 
 struct _token * lexer (const char * input) {
     struct _token * tokens = NULL;
     struct _token * token = NULL;
+    struct _token * next = NULL;
     int comment_line = 0;
+    char * string_begin = NULL;
     int input_i, buf_i;
     int line = 1;
-    char c, ca, buf[LEXER_BUF_SIZE];
+    char c, ca, cp, buf[LEXER_BUF_SIZE];
     
     buf_i = 0;
     buf[buf_i] = 0;
+    c = -1;
     
     for (input_i = 0; input_i < strlen(input); input_i++) {
+        cp = c;
         c = input[input_i];
         if (input_i < strlen(input) - 1)
             ca = input[input_i + 1];
@@ -155,6 +174,22 @@ struct _token * lexer (const char * input) {
             case '\n' :
                 comment_line = 0;
                 break;
+            case '"' :
+                if (string_begin == NULL)
+                    string_begin = (char *) &(input[input_i + 1]);
+                else if (cp != '\\') {
+                    next = lexer_token_string(string_begin, 
+                                              &(input[input_i]) - string_begin,
+                                              line);
+                    if (tokens == NULL) {
+                        tokens = next;
+                        token = next;
+                    }
+                    else {
+                        token->next = next;
+                        token = next;
+                    }
+                }
             case ';' :
                 comment_line = 1;
                 break;

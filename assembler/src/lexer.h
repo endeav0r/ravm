@@ -6,7 +6,7 @@
 #include <string.h>
 
 #define LEXER_BUF_SIZE 128
-#define LEXER_MATCH_TOKENS 35
+#define LEXER_MATCH_TOKENS 36
 
 #define TOKEN_ADD  0
 #define TOKEN_SUB  1
@@ -43,12 +43,14 @@
 #define TOKEN_AND 32
 #define TOKEN_OR  33
 #define TOKEN_XOR 34
+#define TOKEN_DB 35
 
 // required for parser
 #define TOKEN_REG 300
 
 #define TOKEN_CONSTANT 200
 #define TOKEN_LABEL    201
+#define TOKEN_STRING   202
 
 struct _match {
     char text[8];
