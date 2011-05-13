@@ -44,6 +44,7 @@
 #define TOKEN_OR  33
 #define TOKEN_XOR 34
 
+// required for parser
 #define TOKEN_REG 300
 
 #define TOKEN_CONSTANT 200
