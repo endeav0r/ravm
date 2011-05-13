@@ -5,14 +5,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-/*
-struct _label_loc {
-    int loc;
-    struct _label_loc * next;
-}
-*/
-
 struct _label {
+    int type;
     char * text;
     int location;
     struct _label * next;
