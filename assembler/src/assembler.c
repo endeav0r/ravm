@@ -66,6 +66,9 @@ int assemble (struct _parser * parser, const char * filename) {
                 fwrite(&(instruction->rs), 1, 1, fh);
                 break;
             case OP_ADDC :
+            case OP_MULC :
+            case OP_DIVC :
+            case OP_MODC :
             case OP_ANDC :
             case OP_ORC  :
             case OP_XORC :

@@ -7,7 +7,7 @@
 #include "label.h"
 #include "lexer.h"
 
-#define PARSER_RULES 29
+#define PARSER_RULES 32
 #define PARSER_RULES_NONTERMS 8
 #define PARSER_REGISTERS 10
 
@@ -40,6 +40,9 @@
 #define RULE_ORC  26
 #define RULE_XORR 27
 #define RULE_XORC 28
+#define RULE_MULC 29
+#define RULE_DIVC 30
+#define RULE_MODC 31
 
 #define OP_ADDR 0x01
 #define OP_SUB  0x02
@@ -53,6 +56,9 @@
 #define OP_ORC  0x0A
 #define OP_XORR 0x0B
 #define OP_XORC 0x0C
+#define OP_MULC 0x0D
+#define OP_DIVC 0x0E
+#define OP_MODC 0x0F
 #define OP_MOVC 0x10
 #define OP_MOVR 0x11
 #define OP_MOVL 0x12

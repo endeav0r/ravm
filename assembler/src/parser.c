@@ -32,7 +32,10 @@ int rules[PARSER_RULES][PARSER_RULES_NONTERMS] = {
     {TOKEN_OR, TOKEN_REG, TOKEN_SEPERATOR, TOKEN_REG, -1},          // RULE_ORR
     {TOKEN_OR, TOKEN_REG, TOKEN_SEPERATOR, TOKEN_CONSTANT, -1},     // RULE_ORC
     {TOKEN_XOR, TOKEN_REG, TOKEN_SEPERATOR, TOKEN_REG, -1},         // RULE_XORR
-    {TOKEN_XOR, TOKEN_REG, TOKEN_SEPERATOR, TOKEN_CONSTANT, -1}     // RULE_XORC
+    {TOKEN_XOR, TOKEN_REG, TOKEN_SEPERATOR, TOKEN_CONSTANT, -1},    // RULE_XORC
+    {TOKEN_MUL, TOKEN_REG, TOKEN_SEPERATOR, TOKEN_CONSTANT, -1},    // RULE_MULC
+    {TOKEN_DIV, TOKEN_REG, TOKEN_SEPERATOR, TOKEN_CONSTANT, -1},    // RULE_DIVC
+    {TOKEN_MOD, TOKEN_REG, TOKEN_SEPERATOR, TOKEN_CONSTANT, -1}     // RULE_MODC
 };
 
 
@@ -65,7 +68,10 @@ unsigned char rule_to_assembler_op [] = {
     OP_ORR,  // RULE_ORR
     OP_ORC,  // RULE_ORC
     OP_XORR, // RULE_XORR
-    OP_XORC  // RULE_XORC
+    OP_XORC, // RULE_XORC
+    OP_MULC, // RULE_MULC
+    OP_DIVC, // RULE_DIVC
+    OP_MODC  // RULE_MODC
 };
 
 
@@ -139,6 +145,9 @@ struct _instruction * parser_instruction (int rule,
             instruction->size = 3;
             break;
         case RULE_ADDC :
+        case RULE_MULC :
+        case RULE_DIVC :
+        case RULE_MODC :
         case RULE_ANDC :
         case RULE_ORC  :
         case RULE_XORC :
