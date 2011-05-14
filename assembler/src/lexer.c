@@ -81,6 +81,24 @@ int lexer_valid_decimal (const char * text) {
 }
 
 
+int lexer_valid_hexadecimal (const char * text) {
+    int i;
+    if (text[0] != '0')
+        return 0;
+    if (text[1] != 'x')
+        return 0;
+    for (i = 2; i < strlen(text); i++) {
+        if (   ((text[i] >= 'A') && (text[i] <= 'F'))
+            || ((text[i] >= 'a') && (text[i] <= 'f'))
+            || ((text[i] >= '0') && (text[i] <= '9')))
+            continue;
+        return 0;
+    }
+    return 1;
+}
+        
+
+
 int lexer_valid_label (const char * text) {
     int i;
     for (i = 0; i < strlen(text); i++) {
@@ -120,7 +138,7 @@ struct _token * lexer_token_create (const char * text, int line) {
     }
     
     if (matched == 0) {
-        if (lexer_valid_decimal(text)) {
+        if (lexer_valid_decimal(text) | lexer_valid_hexadecimal(text)) {
             token->type = TOKEN_CONSTANT;
             token->constant = strtol(text, NULL, 0);
         }
@@ -139,7 +157,7 @@ struct _token * lexer_token_string (const char * string, int length, int line) {
     token = (struct _token *) malloc(sizeof(struct _token));
     token->type = TOKEN_STRING;
     token->text = (char *) malloc(length + 1);
-    strcpy(token->text, string);
+    strncpy(token->text, string, length);
     token->line = line;
     token->next = NULL;
     
@@ -153,7 +171,7 @@ struct _token * lexer (const char * input) {
     struct _token * token = NULL;
     struct _token * next = NULL;
     int comment_line = 0;
-    char * string_begin = NULL;
+    int string_begin = -1;
     int input_i, buf_i;
     int line = 1;
     char c, ca, cp, buf[LEXER_BUF_SIZE];
@@ -175,11 +193,11 @@ struct _token * lexer (const char * input) {
                 comment_line = 0;
                 break;
             case '"' :
-                if (string_begin == NULL)
-                    string_begin = (char *) &(input[input_i + 1]);
+                if (string_begin == -1)
+                    string_begin = input_i + 1;
                 else if (cp != '\\') {
-                    next = lexer_token_string(string_begin, 
-                                              &(input[input_i]) - string_begin,
+                    next = lexer_token_string(&(input[string_begin]), 
+                                              input_i - string_begin,
                                               line);
                     if (tokens == NULL) {
                         tokens = next;
