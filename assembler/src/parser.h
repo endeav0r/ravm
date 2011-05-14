@@ -10,7 +10,7 @@
 #include "parameter_list.h"
 
 #define PARSER_RULES 41
-#define PARSER_RULES_NONTERMS 16
+#define PARSER_RULES_NONTERMS 64
 #define PARSER_REGISTERS 10
 
 // RULE_LABEL and RULE_DB are special
