@@ -26,7 +26,7 @@ int rules[PARSER_RULES][PARSER_RULES_NONTERMS] = {
     {TOKEN_CMP, TOKEN_REG, TOKEN_SEPERATOR, TOKEN_CONSTANT, -1},    // RULE_CMPC
     {TOKEN_HLT, -1},                                                // RULE_HLT
     {TOKEN_NOP, -1},                                                // RULE_NOP
-    {TOKEN_LABEL, TOKEN_COLON, -1},                                 // RULE_LABEL
+    {TOKEN_LABEL, TOKEN_COLON, TOKEN_DB, -1},                       // RULE_DB
     {TOKEN_AND, TOKEN_REG, TOKEN_SEPERATOR, TOKEN_REG, -1},         // RULE_ANDR
     {TOKEN_AND, TOKEN_REG, TOKEN_SEPERATOR, TOKEN_CONSTANT, -1},    // RULE_ANDC
     {TOKEN_OR, TOKEN_REG, TOKEN_SEPERATOR, TOKEN_REG, -1},          // RULE_ORR
@@ -35,7 +35,16 @@ int rules[PARSER_RULES][PARSER_RULES_NONTERMS] = {
     {TOKEN_XOR, TOKEN_REG, TOKEN_SEPERATOR, TOKEN_CONSTANT, -1},    // RULE_XORC
     {TOKEN_MUL, TOKEN_REG, TOKEN_SEPERATOR, TOKEN_CONSTANT, -1},    // RULE_MULC
     {TOKEN_DIV, TOKEN_REG, TOKEN_SEPERATOR, TOKEN_CONSTANT, -1},    // RULE_DIVC
-    {TOKEN_MOD, TOKEN_REG, TOKEN_SEPERATOR, TOKEN_CONSTANT, -1}     // RULE_MODC
+    {TOKEN_MOD, TOKEN_REG, TOKEN_SEPERATOR, TOKEN_CONSTANT, -1},    // RULE_MODC
+    {TOKEN_LABEL, TOKEN_COLON, -1},                                 // RULE_LABEL
+    {TOKEN_ADD, TOKEN_REG, TOKEN_SEPERATOR, TOKEN_LABEL, -1},       // RULE_ADDL
+    {TOKEN_MUL, TOKEN_REG, TOKEN_SEPERATOR, TOKEN_LABEL, -1},       // RULE_MULL
+    {TOKEN_DIV, TOKEN_REG, TOKEN_SEPERATOR, TOKEN_LABEL, -1},       // RULE_DIVL
+    {TOKEN_AND, TOKEN_REG, TOKEN_SEPERATOR, TOKEN_LABEL, -1},       // RULE_ANDL
+    {TOKEN_OR,  TOKEN_REG, TOKEN_SEPERATOR, TOKEN_LABEL, -1},       // RULE_ORL
+    {TOKEN_XOR, TOKEN_REG, TOKEN_SEPERATOR, TOKEN_LABEL, -1},       // RULE_XORL
+    {TOKEN_CMP, TOKEN_REG, TOKEN_SEPERATOR, TOKEN_LABEL, -1},       // RULE_CMPL
+    {TOKEN_MOV, TOKEN_REG, TOKEN_SEPERATOR, TOKEN_LABEL, -1}        // RULE_MOVLA
 };
 
 
@@ -71,7 +80,16 @@ unsigned char rule_to_assembler_op [] = {
     OP_XORC, // RULE_XORC
     OP_MULC, // RULE_MULC
     OP_DIVC, // RULE_DIVC
-    OP_MODC  // RULE_MODC
+    OP_MODC, // RULE_MODC
+    -1,      // RULE_DB
+    OP_ADDC, // RULE_ADDL
+    OP_MULC, // RULE_MULL
+    OP_DIVC, // RULE_DIVL
+    OP_ANDC, // RULE_AND:
+    OP_ORC,  // RULE_ORL
+    OP_XORC, // RULE_XORL
+    OP_CMPC, // RULE_CMPL
+    OP_MOVC  // RULE_MOVLA
 };
 
 
@@ -126,6 +144,7 @@ struct _instruction * parser_instruction (int rule,
     
     instruction = (struct _instruction *) malloc(sizeof(struct _instruction));
     instruction->next = NULL;
+    instruction->label = NULL;
     instruction->op = rule_to_assembler_op[rule];
     instruction->location = parser->size;
     
@@ -173,8 +192,20 @@ struct _instruction * parser_instruction (int rule,
         case RULE_JG   :
         case RULE_CALL :
             // oh boy labels!
-            instruction->jump = label_get(&(parser->labels), token_stack[1]->text);
+            instruction->label = label_get(&(parser->labels), token_stack[1]->text);
             instruction->size = 5;
+            break;
+        case RULE_ADDL :
+        case RULE_MULL :
+        case RULE_DIVL :
+        case RULE_ANDL :
+        case RULE_ORL  :
+        case RULE_XORL :
+        case RULE_CMPL :
+        case RULE_MOVLA :
+            instruction->rd = parser_token_to_assembler_reg(token_stack[1]->type);
+            instruction->label = label_get(&(parser->labels), token_stack[3]->text);
+            instruction->size = 6;
             break;
         case RULE_PUSH :
         case RULE_POP :
@@ -186,6 +217,21 @@ struct _instruction * parser_instruction (int rule,
     }
     
     return instruction;
+}
+
+
+int parser_memory_definition (struct _parser * parser,
+                              struct _token * token_stack[PARSER_RULES_NONTERMS]) {
+    struct _label * label;
+    struct _parameter_list * parameter_list;
+    
+    label          = label_get(&(parser->labels), token_stack[0]->text);
+    parameter_list = parameter_list_create (token_stack[3]);
+    parser->memory_definitions = memory_definition_add (parser->memory_definitions,
+                                                        label,
+                                                        parameter_list);
+    
+    return 0;
 }
 
 
@@ -220,8 +266,13 @@ int parser_reduce (struct _parser * parser,
     }
     
     if (rule == RULE_LABEL) {
+        // get this label
         label = label_get(&(parser->labels), token_stack[0]->text);
+        // set it's location to this location in the TEXT
         label->location = parser->size;
+    }
+    else if (rule == RULE_DB) {
+        parser_memory_definition(parser, token_stack);
     }
     else {
         if (parser->instructions == NULL) {
