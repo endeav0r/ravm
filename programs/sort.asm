@@ -1,47 +1,17 @@
-main :
+words: db 6, 4, 2, 0, 7, 5, 3, 1
 
-    ; allocate 8 words for items to be sorted
-    add rsp, -32
+main :
     
-    ; place 8 words in the first 8 locations of this
-    ; stack frame
-    mov r0  , rbp
-    mov r1, 4
-    mov [r0], r1
+    ; get locations of words
+    mov r0, words
     
-    add r0, -4
-    mov r1, 7
-    mov [r0], r1
-    
-    add r0, -4
-    mov r1, 1
-    mov [r0], r1
-    
-    add r0, -4
-    mov r1, 3
-    mov [r0], r1
-    
-    add r0, -4
+    ; set number of words
     mov r1, 8
-    mov [r0], r1
     
-    add r0, -4
-    mov r1, 5
-    mov [r0], r1
-    
-    add r0, -4
-    mov r1, 2
-    mov [r0], r1
-    
-    add r0, -4
-    mov r1, 6
-    mov [r0], r1
-    
-    mov r1, 8
     push r1
     push r0
     call bubble_sort
-    add rsp, -8
+    add rsp, 8 ; take call arguments off stack
     hlt
 
 ; bubble_sort (word * items, int items_n)
@@ -59,13 +29,17 @@ bubble_sort :
     
     mov r0, 4
     mul r7, r0
-    add r7, r6 ; items + (items_n * 4)
+    add r7, r6 ; items + ((items_n - 1) * 4)
+    add r7, -4 ; thought problem: why do we want -4 here
+               ; hint: think about when we want our loop to terminate, and
+               ;       what would cause us to go compare a value outsie of
+               ;       our array
     
     mov r5, 0 ; this gets set to 1 if we swap
 
     mov r0, r6
 
-bubble_sort_loop :    
+bubble_sort_loop :
     mov r1, r0
     add r1, 4
     
