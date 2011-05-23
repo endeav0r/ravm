@@ -17,6 +17,8 @@ int vm_initialize (struct _vm * vm) {
     vm->bps = NULL;
     vm->last_bp = NULL;
     
+    vm->instruction_count = 0;
+    
     memset(vm->memory, 0, VM_MEMORY_SIZE * sizeof(unsigned char));
 
     return 0;
@@ -264,6 +266,9 @@ int vm_run (struct _vm * vm) {
             default :
                 return ERROR_VM_UNKNOWN_OP;
         }
+        
+        vm->instruction_count++;
+        
         if (vm->step == 1)
             return 2;
     }

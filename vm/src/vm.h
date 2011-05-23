@@ -70,6 +70,8 @@ struct _vm {
     struct _bp * bps;
     
     int step; // if set, we return after each instruction
+    
+    int instruction_count; // total number of instructions executed
 };
 
 int vm_initialize (struct _vm * vm);
