@@ -126,6 +126,18 @@ const char * debug_instruction_description (const unsigned char * instruction) {
         case OP_MODC :
             strcpy(instruction_description, "MOD ");
             break;
+        case OP_ANDR :
+        case OP_ANDC :
+            strcpy(instruction_description, "AND ");
+            break;
+        case OP_ORR :
+        case OP_ORC :
+            strcpy(instruction_description, "OR ");
+            break;
+        case OP_XORR :
+        case OP_XORC :
+            strcpy(instruction_description, "XOR ");
+            break;
         case OP_MOVC :
         case OP_MOVR :
         case OP_MOVL :
@@ -170,11 +182,14 @@ const char * debug_instruction_description (const unsigned char * instruction) {
     switch (instruction[0]) {
         case OP_ADDR :
         case OP_MOVR :
-        case OP_SUB :
-        case OP_MUL :
-        case OP_DIV :
-        case OP_MOD :
+        case OP_SUB  :
+        case OP_MUL  :
+        case OP_DIV  :
+        case OP_MOD  :
         case OP_CMPR :
+        case OP_ANDR :
+        case OP_ORR  :
+        case OP_XORR :
             strcat(instruction_description, debug_register_description(instruction[1]));
             strcat(instruction_description, ", ");
             strcat(instruction_description, debug_register_description(instruction[2]));
@@ -185,6 +200,9 @@ const char * debug_instruction_description (const unsigned char * instruction) {
         case OP_MODC :
         case OP_MOVC :
         case OP_CMPC :
+        case OP_ANDC :
+        case OP_ORC  :
+        case OP_XORC :
             strcat(instruction_description, debug_register_description(instruction[1]));
             sprintf(tmp, ", %d", b2lendian(*((int*)&(instruction[2]))));
             strcat(instruction_description, tmp);
