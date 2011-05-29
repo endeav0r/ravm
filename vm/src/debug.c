@@ -66,6 +66,8 @@ int debug_instruction_size (const unsigned char instruction) {
         case OP_MOD :
         case OP_MOVL :
         case OP_MOVS :
+        case OP_MOVLB :
+        case OP_MOVSB :
         case OP_MOVR :
         case OP_CMPR :
         case OP_ANDR :
@@ -102,7 +104,8 @@ int debug_instruction_size (const unsigned char instruction) {
 }
 
 
-char instruction_description[32];
+char instruction_description[64];
+
 const char * debug_instruction_description (const unsigned char * instruction) {
     char tmp[32];
     strcpy(instruction_description, "Instruction Not Found");
@@ -138,10 +141,12 @@ const char * debug_instruction_description (const unsigned char * instruction) {
         case OP_XORC :
             strcpy(instruction_description, "XOR ");
             break;
-        case OP_MOVC :
-        case OP_MOVR :
-        case OP_MOVL :
-        case OP_MOVS :
+        case OP_MOVC  :
+        case OP_MOVR  :
+        case OP_MOVL  :
+        case OP_MOVS  :
+        case OP_MOVLB :
+        case OP_MOVSB :
             strcpy(instruction_description, "MOV ");
             break;
         case OP_JMP :
@@ -211,17 +216,29 @@ const char * debug_instruction_description (const unsigned char * instruction) {
         case OP_POP :
             strcat(instruction_description, debug_register_description(instruction[1]));
             break;
+        case OP_MOVL :
+            strcat(instruction_description, debug_register_description(instruction[1]));
+            strcat(instruction_description, ", [");
+            strcat(instruction_description, debug_register_description(instruction[2]));
+            strcat(instruction_description, "]");
+            break;
         case OP_MOVS :
             strcat(instruction_description, "[");
             strcat(instruction_description, debug_register_description(instruction[1]));
             strcat(instruction_description, "], ");
             strcat(instruction_description, debug_register_description(instruction[2]));
             break;
-        case OP_MOVL :
+        case OP_MOVLB :
             strcat(instruction_description, debug_register_description(instruction[1]));
-            strcat(instruction_description, ", [");
+            strcat(instruction_description, ", BYTE [");
             strcat(instruction_description, debug_register_description(instruction[2]));
             strcat(instruction_description, "]");
+            break;
+        case OP_MOVSB :
+            strcat(instruction_description, "BYTE [");
+            strcat(instruction_description, debug_register_description(instruction[1]));
+            strcat(instruction_description, "], ");
+            strcat(instruction_description, debug_register_description(instruction[2]));
             break;
         case OP_JMP :
         case OP_JZ :

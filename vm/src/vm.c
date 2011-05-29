@@ -104,18 +104,20 @@ int vm_run (struct _vm * vm) {
         op = vm->memory[vm->IP++];
         switch (op) {
             // |op|rd|rs|
-            case OP_ADDR :
-            case OP_SUB  :
-            case OP_MUL  :
-            case OP_DIV  :
-            case OP_MOD  :
-            case OP_ANDR :
-            case OP_ORR  :
-            case OP_XORR :
-            case OP_MOVR :
-            case OP_MOVL :
-            case OP_MOVS :
-            case OP_CMPR :
+            case OP_ADDR  :
+            case OP_SUB   :
+            case OP_MUL   :
+            case OP_DIV   :
+            case OP_MOD   :
+            case OP_ANDR  :
+            case OP_ORR   :
+            case OP_XORR  :
+            case OP_MOVR  :
+            case OP_MOVL  :
+            case OP_MOVS  :
+            case OP_MOVLB :
+            case OP_MOVSB :
+            case OP_CMPR  :
                 rd = vm->memory[vm->IP++];
                 rs = vm->memory[vm->IP++];
             switch (op) {
@@ -151,6 +153,12 @@ int vm_run (struct _vm * vm) {
                     break;
                 case OP_MOVS :
                     *((int*) &(vm->memory[vm->reg[rd]])) = vm->reg[rs];
+                    break;
+                case OP_MOVLB :
+                    vm->reg[rd] = (int) vm->memory[vm->reg[rs]];
+                    break;
+                case OP_MOVSB :
+                    vm->memory[vm->reg[rd]] = (unsigned char) vm->reg[rs];
                     break;
                 case OP_CMPR :
                     vm->FLAGS = vm->reg[rd] - vm->reg[rs];
