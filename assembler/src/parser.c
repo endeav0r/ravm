@@ -173,7 +173,7 @@ struct _instruction * parser_instruction (int rule,
         case RULE_MOVC :
         case RULE_CMPC :
             instruction->rd = parser_token_to_assembler_reg(token_stack[1]->type);
-            instruction->constant = atoi(token_stack[3]->text);
+            instruction->constant = token_stack[3]->constant;
             instruction->size = 6;
             break;
         case RULE_MOVL :
