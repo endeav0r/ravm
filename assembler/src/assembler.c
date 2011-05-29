@@ -92,6 +92,8 @@ int assemble (struct _parser * parser, const char * filename) {
             case OP_CMPR :
             case OP_MOVL :
             case OP_MOVS :
+            case OP_MOVLB :
+            case OP_MOVSB :
                 fwrite(&(instruction->rd), 1, 1, fh);
                 fwrite(&(instruction->rs), 1, 1, fh);
                 break;

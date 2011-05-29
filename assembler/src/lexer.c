@@ -55,6 +55,7 @@ void lexer_init () {
     lexer_match_set(&(matches[33]), "or",   TOKEN_OR);
     lexer_match_set(&(matches[34]), "xor",  TOKEN_XOR);
     lexer_match_set(&(matches[35]), "db",   TOKEN_DB);
+    lexer_match_set(&(matches[36]), "byte", TOKEN_BYTE);
 }
 
 

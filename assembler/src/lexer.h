@@ -6,7 +6,7 @@
 #include <string.h>
 
 #define LEXER_BUF_SIZE 128
-#define LEXER_MATCH_TOKENS 36
+#define LEXER_MATCH_TOKENS 37
 
 #define TOKEN_ADD  0
 #define TOKEN_SUB  1
@@ -40,10 +40,11 @@
 #define TOKEN_COLON         29
 #define TOKEN_TERMINATOR    30
 #define TOKEN_SEPERATOR     31
-#define TOKEN_AND 32
-#define TOKEN_OR  33
-#define TOKEN_XOR 34
-#define TOKEN_DB 35
+#define TOKEN_AND  32
+#define TOKEN_OR   33
+#define TOKEN_XOR  34
+#define TOKEN_DB   35
+#define TOKEN_BYTE 36
 
 // required for parser
 #define TOKEN_REG 300

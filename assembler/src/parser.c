@@ -44,7 +44,11 @@ int rules[PARSER_RULES][PARSER_RULES_NONTERMS] = {
     {TOKEN_OR,  TOKEN_REG, TOKEN_SEPERATOR, TOKEN_LABEL, -1},       // RULE_ORL
     {TOKEN_XOR, TOKEN_REG, TOKEN_SEPERATOR, TOKEN_LABEL, -1},       // RULE_XORL
     {TOKEN_CMP, TOKEN_REG, TOKEN_SEPERATOR, TOKEN_LABEL, -1},       // RULE_CMPL
-    {TOKEN_MOV, TOKEN_REG, TOKEN_SEPERATOR, TOKEN_LABEL, -1}        // RULE_MOVLA
+    {TOKEN_MOV, TOKEN_REG, TOKEN_SEPERATOR, TOKEN_LABEL, -1},       // RULE_MOVLA
+    {TOKEN_MOV, TOKEN_REG, TOKEN_SEPERATOR, TOKEN_BYTE, TOKEN_BRACKET_OPEN,
+                TOKEN_REG, TOKEN_BRACKET_CLOSE, -1},                // RULE_MOVLB
+    {TOKEN_MOV, TOKEN_BYTE, TOKEN_BRACKET_OPEN, TOKEN_REG, TOKEN_BRACKET_CLOSE,
+                TOKEN_SEPERATOR, TOKEN_REG, -1}                     // RULE_MOVSB
 };
 
 
@@ -89,7 +93,9 @@ unsigned char rule_to_assembler_op [] = {
     OP_ORC,  // RULE_ORL
     OP_XORC, // RULE_XORL
     OP_CMPC, // RULE_CMPL
-    OP_MOVC  // RULE_MOVLA
+    OP_MOVC, // RULE_MOVLA
+    OP_MOVLB,// RULE_MOVLB
+    OP_MOVSB // RULE_MOVSB
 };
 
 
@@ -149,20 +155,31 @@ struct _instruction * parser_instruction (int rule,
     instruction->location = parser->size;
     
     switch (rule) {
-        case RULE_ADDR :
-        case RULE_SUB :
-        case RULE_MUL :
-        case RULE_DIV :
-        case RULE_MOD :
-        case RULE_ANDR :
-        case RULE_ORR  :
-        case RULE_XORR :
-        case RULE_MOVR :
-        case RULE_CMPR :
+        case RULE_ADDR  :
+        case RULE_SUB   :
+        case RULE_MUL   :
+        case RULE_DIV   :
+        case RULE_MOD   :
+        case RULE_ANDR  :
+        case RULE_ORR   :
+        case RULE_XORR  :
+        case RULE_MOVR  :
+        case RULE_CMPR  :
             instruction->rd = parser_token_to_assembler_reg(token_stack[1]->type);
             instruction->rs = parser_token_to_assembler_reg(token_stack[3]->type);
             instruction->size = 3;
             break;
+        case RULE_MOVLB :
+            instruction->rd = parser_token_to_assembler_reg(token_stack[1]->type);
+            instruction->rs = parser_token_to_assembler_reg(token_stack[5]->type);
+            instruction->size = 3;
+            break;
+        case RULE_MOVSB :
+            instruction->rd = parser_token_to_assembler_reg(token_stack[3]->type);
+            instruction->rs = parser_token_to_assembler_reg(token_stack[6]->type);
+            instruction->size = 3;
+            break;
+
         case RULE_ADDC :
         case RULE_MULC :
         case RULE_DIVC :
