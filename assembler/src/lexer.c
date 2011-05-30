@@ -200,6 +200,7 @@ struct _token * lexer (const char * input) {
                     next = lexer_token_string(&(input[string_begin]), 
                                               input_i - string_begin,
                                               line);
+                    string_begin = -1;
                     if (tokens == NULL) {
                         tokens = next;
                         token = next;
@@ -265,7 +266,7 @@ struct _token * lexer (const char * input) {
                         token = token->next;
                     }
                     if (token->type == -1) {
-                        fprintf(stderr, "unrecognized token: '%s'\n", buf);
+                        fprintf(stderr, "unrecognized token line %d: '%s'\n", line, buf);
                         exit(0);
                     }
                     buf_i = 0;
