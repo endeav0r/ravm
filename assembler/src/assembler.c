@@ -161,7 +161,7 @@ int assemble (struct _parser * parser, const char * filename) {
         while (parameter_list != NULL) {
             switch (parameter_list->type) {
                 case PARAMETER_STRING :
-                    fwrite(parameter_list->string, 1, strlen(parameter_list->string), fh);
+                    fwrite(parameter_list->string, 1, strlen(parameter_list->string) + 1, fh);
                     location += strlen(parameter_list->string);
                     break;
                 case PARAMETER_WORD :
@@ -196,6 +196,7 @@ int main (int argc, char * argv[]) {
     
     lexer_init();
     tokens = lexer(text);
+    
     parser_parse(&parser, tokens);
     
     assembler_memory_definition_labels(&parser);
