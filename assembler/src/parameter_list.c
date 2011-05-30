@@ -48,8 +48,8 @@ struct _parameter_list * parameter_list_create (struct _token * tokens) {
         if (token->type == TOKEN_SEPERATOR) token = token->next;
         else if (token->type == TOKEN_TERMINATOR) break;
         else {
-            fprintf(stderr, "illegal token in parameter list, line %d\n",
-                    token->line);
+            fprintf(stderr, "illegal token in parameter list, line %d, token %d\n",
+                    token->line, token->type);
             exit(0);
         }
     }
