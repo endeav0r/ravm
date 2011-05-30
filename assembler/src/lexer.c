@@ -124,7 +124,7 @@ struct _token * lexer_token_create (const char * text, int line) {
     
     token = (struct _token *) malloc(sizeof(struct _token));
     token->type = -1;
-    token->text = (char *) malloc(strlen(text + 1));
+    token->text = (char *) malloc(strlen(text) + 1);
     strcpy(token->text, text);
     token->line = line;
     token->next = NULL;
