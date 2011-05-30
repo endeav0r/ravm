@@ -162,7 +162,7 @@ int assemble (struct _parser * parser, const char * filename) {
             switch (parameter_list->type) {
                 case PARAMETER_STRING :
                     fwrite(parameter_list->string, 1, strlen(parameter_list->string) + 1, fh);
-                    location += strlen(parameter_list->string);
+                    location += strlen(parameter_list->string) + 1;
                     break;
                 case PARAMETER_WORD :
                     endian_tmp = l2bendian(parameter_list->word);
