@@ -28,7 +28,7 @@ struct _parameter_list * parameter_list_create (struct _token * tokens) {
             case TOKEN_CONSTANT :
                 next = (struct _parameter_list *) malloc(sizeof(struct _parameter_list));
                 next->type = PARAMETER_WORD;
-                next->word = strtol(token->text, NULL, 0);
+                next->word = strtoul(token->text, NULL, 0);
                 next->next = NULL;
                 bytes += 4;
                 break;

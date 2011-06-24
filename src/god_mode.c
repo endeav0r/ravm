@@ -40,7 +40,9 @@ void god_mode_init () {
 
 void god_mode_draw (struct _vm * vm) {
     char buf[128];
-    int word, i;
+    int i;
+    int instruction_size;
+    unsigned int word;
     unsigned short c;
     unsigned short color;
     int line_width, offset, y, x;
@@ -81,8 +83,11 @@ void god_mode_draw (struct _vm * vm) {
                 c = buf[i];
                 
                 // special rules for picking instructions out of words
+                // if invalid instruction size, default to 1
+                if ((instruction_size = debug_instruction_size(vm->memory[vm->IP])) == -1)
+                    instruction_size = 1;
                 if ((offset + i/2 >= vm->IP) && (offset + i/2
-                     < vm->IP + debug_instruction_size(vm->memory[vm->IP])))
+                     < vm->IP + instruction_size))
                     c |= COLOR_PAIR(GM_COLOR_IP);
                 else {
                     c |= COLOR_PAIR(color);

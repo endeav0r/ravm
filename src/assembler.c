@@ -18,7 +18,7 @@ char * assembler_read_file (const char * filename) {
     
     fh = fopen(filename, "r");
     if (fh == NULL) { 
-        fprintf(stderr, "failed to open file\n");
+        fprintf(stderr, "failed to open file %s\n", filename);
         exit(0);
     }
     
@@ -44,13 +44,15 @@ int assembler_memory_definition_labels (struct _parser * parser) {
     int location;
     
     location = parser->size;
-    location += 4 - (location % 4); // align on a 4 byte boundary
+    if (location % 4) // align on a 4 byte boundary
+        location += 4 - (location % 4);
     
     memory_definition = parser->memory_definitions;
     while (memory_definition != NULL) {
-        memory_definition->label->location = location;
+        memory_definition->label->location = location;\
         location += memory_definition->parameter_list->bytes;
-        location += 4 - (location % 4);
+        if (location % 4)
+            location += 4 - (location % 4);
         memory_definition = memory_definition->next;
     }
     
@@ -152,10 +154,12 @@ int assemble (struct _parser * parser, const char * filename) {
     location = parser->size;
     memory_definition = parser->memory_definitions;
     while (memory_definition != NULL) {
-        // align to 4 byte boundary
-        endian_tmp = 0x00000000;
-        fwrite(&(endian_tmp), 1, 4 - (location % 4), fh);
-        location += 4 - (location % 4);
+        // align to 4 byte boundary if needed
+        if (location % 4) {
+            endian_tmp = 0x00000000;
+            fwrite(&(endian_tmp), 1, 4 - (location % 4), fh);
+            location += 4 - (location % 4);
+        }
         
         parameter_list = memory_definition->parameter_list;
         while (parameter_list != NULL) {
@@ -181,29 +185,31 @@ int assemble (struct _parser * parser, const char * filename) {
 
 
 int main (int argc, char * argv[]) {
+    int source_i;
     char * text;
     struct _token * tokens;
     struct _parser parser;
     
     memset(&parser, 0, sizeof(struct _parser));
     
-    if (argc != 3) {
-        fprintf(stderr, "usage: %s <assembly_source> <binary_out>\n", argv[0]);
+    if (argc < 3) {
+        fprintf(stderr, "usage: %s <binary_out> <assembly source file>s\n", argv[0]);
         exit(0);
     }
     
-    text = assembler_read_file(argv[1]);
-    
     lexer_init();
-    tokens = lexer(text);
     
-    parser_parse(&parser, tokens);
+    for (source_i = 2; source_i < argc; source_i++) {
+        text = assembler_read_file(argv[source_i]);
+        tokens = lexer(text);
+        free(text);
+        parser_parse(&parser, tokens);
+    }
     
     assembler_memory_definition_labels(&parser);
     
-    assemble(&parser, argv[2]);
+    assemble(&parser, argv[1]);
     lexer_tokens_delete(tokens);
-    free(text);
        
     return 0;
 }

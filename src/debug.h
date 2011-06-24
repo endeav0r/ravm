@@ -5,12 +5,16 @@
 
 #include "vm.h"
 
-#define b2lendian(x) ((x << 24) | ((x << 8) & 0xff0000) | ((x >> 8) & 0xff00) | (x >> 24))
+
+struct _vm;
+
+unsigned int b2lendian (unsigned int x);
 
 int debug_view_memory (struct _vm * vm, int address, int bytes);
 int debug_view_registers (struct _vm * vm);
 
 int debug_instruction_size (const unsigned char instruction);
 
+const char * debug_register_description (const unsigned char reg);
 const char * debug_instruction_description (const unsigned char * instruction);
 #endif

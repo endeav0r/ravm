@@ -89,12 +89,11 @@ int vm_breakpoint_check (struct _vm * vm) {
     return 0;
 }
 
-
 int vm_run (struct _vm * vm) {
     unsigned char op = 0x90;
     unsigned char rd, rs;
     int constant;
-    
+
     while (vm->memory[vm->IP] != 0x80) {
     
         if (vm_breakpoint_check(vm))
@@ -155,10 +154,10 @@ int vm_run (struct _vm * vm) {
                     *((int*) &(vm->memory[vm->reg[rd]])) = vm->reg[rs];
                     break;
                 case OP_MOVLB :
-                    vm->reg[rd] = (int) vm->memory[vm->reg[rs]];
+                    vm->reg[rd] = (vm->memory[vm->reg[rs]]) & 0x000000ff;
                     break;
                 case OP_MOVSB :
-                    vm->memory[vm->reg[rd]] = (unsigned char) vm->reg[rs];
+                    vm->memory[vm->reg[rd]] = (unsigned char) (vm->reg[rs]);
                     break;
                 case OP_CMPR :
                     vm->FLAGS = vm->reg[rd] - vm->reg[rs];
@@ -264,7 +263,7 @@ int vm_run (struct _vm * vm) {
                 break;
             // ret
             case OP_RET :
-                vm->IP = vm->memory[vm->reg[RSP]];
+                vm->IP = *((int*) &(vm->memory[vm->reg[RSP]]));
                 vm->reg[RSP] += 4;
                 break;
             // nop, hlt
@@ -280,5 +279,119 @@ int vm_run (struct _vm * vm) {
         if (vm->step == 1)
             return 2;
     }
+    return 0;
+}
+
+
+
+int main (int argc, char * argv[]) {
+    char * filename = NULL;
+    char * output_filename = NULL;
+    int opt_god_mode = 0;
+    int c;
+    int memory_view_offset = VM_MEMORY_SIZE - 32;
+    int memory_view_bytes  = 32;
+    int print_info = 0;
+    int step = 0;
+    int error;
+    struct _vm * vm;
+    
+    while ((c = getopt(argc, argv, "b:gi:m:o:sp")) != -1) {
+        switch (c) {
+            case 'b' :
+                memory_view_bytes = strtoul(optarg, NULL, 16);
+                break;
+            case 'g' :
+                opt_god_mode = 1;
+                break;
+            case 'i' :
+                filename = optarg;
+                break;
+            case 'm' :
+                memory_view_offset = strtoul(optarg, NULL, 16);
+                break;
+            case 'o' :
+                output_filename = optarg;
+                break;
+            case 'p' :
+                print_info = 1;
+                break;
+            case 's' :
+                step = 1;
+                print_info = 1;
+                break;
+            case '?' :
+                if ((optopt == 'f') || (optopt == 'o')) {
+                    fprintf(stderr, "option %c requires argument\n", optopt);
+                    exit(0);
+                }
+                else {
+                    fprintf(stderr, "Unknown option: %c\n", optopt);
+                    exit(0);
+                }
+        }
+    }
+    
+    if (filename == NULL) {
+        fprintf(stderr, "Usage: %s [-ps] [-o output] -i image\n", argv[0]);
+        fprintf(stderr, "Runs an assembled image for the rnp_vm\n");
+        fprintf(stderr, "\n");
+        fprintf(stderr, "  -b [hex]   BYTES of memory to view in debug output\n");
+        fprintf(stderr, "  -i [path]  path to IMAGE\n");
+        fprintf(stderr, "  -m [hex]   OFFSET in memory to view in debug output\n");
+        fprintf(stderr, "  -o [path]  path to OUTPUT memory dump at HLT\n");
+        fprintf(stderr, "  -p         PRINT info at each step\n");
+        fprintf(stderr, "  -s         STEP through instruction (implies PRINT)\n");
+        exit(0);
+    }
+    
+    vm = (struct _vm *) malloc(sizeof(struct _vm));
+    vm_initialize(vm);
+    
+    if ((error = image_load(vm, filename)) != 0) {
+        fprintf(stderr, "error %d\n", error);
+        exit(error);
+    }
+    
+    if (opt_god_mode) {
+        god_mode(vm);
+    }
+    else {    
+        if (step | print_info)
+            vm->step = 1;
+
+        if (print_info) {
+            debug_view_memory(vm,
+                              memory_view_offset,
+                              memory_view_bytes);
+            debug_view_registers(vm);
+            fflush(stdout);
+            printf("%s\n", debug_instruction_description(&(vm->memory[vm->IP])));
+            printf("\n");
+        }
+
+        while (vm_run(vm)) {
+            if (print_info) {
+                debug_view_memory(vm,
+                                  memory_view_offset,
+                                  memory_view_bytes);
+                debug_view_registers(vm);
+                fflush(stdout);
+                printf("%s\n", debug_instruction_description(&(vm->memory[vm->IP])));
+                printf("\n");
+            }
+            if (step) getc(stdin);
+        }
+    }
+    
+    if (output_filename != NULL) {
+        if ((error = image_dump(vm, output_filename)) != 0) {
+            fprintf(stderr, "error dumping memory to file: %d\n", error);
+            exit(error);
+        }
+    }
+    
+    free(vm);
+    
     return 0;
 }

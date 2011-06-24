@@ -141,7 +141,7 @@ struct _token * lexer_token_create (const char * text, int line) {
     if (matched == 0) {
         if (lexer_valid_decimal(text) | lexer_valid_hexadecimal(text)) {
             token->type = TOKEN_CONSTANT;
-            token->constant = (int) strtol(text, NULL, 0);
+            token->constant = (int) strtoul(text, NULL, 0);
         }
         else if (lexer_valid_label(text)) {
             token->type = TOKEN_LABEL;

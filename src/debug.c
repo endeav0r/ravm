@@ -1,6 +1,17 @@
 #include "debug.h"
 
 
+unsigned int b2lendian (unsigned int x) {
+    unsigned int y = 0;
+    
+    y  = x << 24;
+    y |= (x << 8) & 0x00ff0000;
+    y |= (x >> 8) & 0x0000ff00;
+    y |= x >> 24;
+
+    return y;
+}
+
 int debug_view_memory (struct _vm * vm, int address, int bytes) {
     int i;
     
@@ -98,8 +109,8 @@ int debug_instruction_size (const unsigned char instruction) {
         case OP_POP :
             return 2;
     }
-    fprintf(stderr, "invalid instruction to debug_instruction_size %d\n",
-            (int) instruction);
+    //fprintf(stderr, "invalid instruction to debug_instruction_size %d\n",
+    //        (int) instruction);
     return -1;
 }
 

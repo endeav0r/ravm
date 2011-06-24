@@ -1,12 +1,17 @@
 #ifndef vm_HEADER
 #define vm_HEADER
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
+#include "debug.h"
+#include "god_mode.h"
+#include "image.h"
 #include "error.h"
 
-#define VM_MEMORY_SIZE 0x00000200
+#define VM_MEMORY_SIZE 1024
 
 #define OP_ADDR  0x01
 #define OP_SUB   0x02

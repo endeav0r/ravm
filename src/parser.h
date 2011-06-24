@@ -8,6 +8,7 @@
 #include "lexer.h"
 #include "memory_definition.h"
 #include "parameter_list.h"
+#include "vm.h"
 
 #define PARSER_RULES 43
 #define PARSER_RULES_NONTERMS 64
@@ -59,51 +60,6 @@
 #define RULE_MOVLA 40
 #define RULE_MOVLB 41
 #define RULE_MOVSB 42
-
-#define OP_ADDR  0x01
-#define OP_SUB   0x02
-#define OP_MUL   0x03
-#define OP_DIV   0x04
-#define OP_MOD   0x05
-#define OP_ADDC  0x06
-#define OP_ANDR  0x07
-#define OP_ANDC  0x08
-#define OP_ORR   0x09
-#define OP_ORC   0x0A
-#define OP_XORR  0x0B
-#define OP_XORC  0x0C
-#define OP_MULC  0x0D
-#define OP_DIVC  0x0E
-#define OP_MODC  0x0F
-#define OP_MOVC  0x10
-#define OP_MOVR  0x11
-#define OP_MOVL  0x12
-#define OP_MOVS  0x13
-#define OP_MOVLB 0x14
-#define OP_MOVSB 0x15
-#define OP_JMP   0x20
-#define OP_JZ    0x21
-#define OP_JE    0x22
-#define OP_JG    0x23
-#define OP_CALL  0x30
-#define OP_RET   0x31
-#define OP_PUSH  0x32
-#define OP_POP   0x33
-#define OP_CMPR  0x40
-#define OP_CMPC  0x41
-#define OP_HLT   0x80
-#define OP_NOP   0x90
-
-#define R0 0x00
-#define R1 0x01
-#define R2 0x02
-#define R3 0x03
-#define R4 0x04
-#define R5 0x05
-#define R6 0x06
-#define R7 0x07
-#define RSP 0x08
-#define RBP 0x09
 
 struct _instruction {
     unsigned char op;

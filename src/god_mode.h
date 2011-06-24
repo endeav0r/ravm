@@ -7,6 +7,7 @@
 #include "debug.h"
 #include "vm.h"
 
+struct _vm;
 
 #define GM_COLOR       1
 #define GM_COLOR_CUR   2
