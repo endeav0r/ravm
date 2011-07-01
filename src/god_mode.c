@@ -141,6 +141,9 @@ int god_mode (struct _vm * vm) {
                 break;
             case 's' :
                 vm_run(vm);
+                break;  
+            case 'q':
+                god_mode_finish();
                 break;
         }
     }
