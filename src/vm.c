@@ -337,6 +337,7 @@ int main (int argc, char * argv[]) {
         fprintf(stderr, "Runs an assembled image for the rnp_vm\n");
         fprintf(stderr, "\n");
         fprintf(stderr, "  -b [hex]   BYTES of memory to view in debug output\n");
+        fprintf(stderr, "  -g         god mode allows visualization of memory\n");
         fprintf(stderr, "  -i [path]  path to IMAGE\n");
         fprintf(stderr, "  -m [hex]   OFFSET in memory to view in debug output\n");
         fprintf(stderr, "  -o [path]  path to OUTPUT memory dump at HLT\n");
