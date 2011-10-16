@@ -14,7 +14,6 @@ char * assembler_read_file (const char * filename) {
     char * text;
     FILE * fh;
     int filesize;
-    int bytes_read;
     
     fh = fopen(filename, "r");
     if (fh == NULL) { 
@@ -30,7 +29,7 @@ char * assembler_read_file (const char * filename) {
     
     text[filesize] = 0;
     
-    bytes_read = fread(text, 1, filesize, fh);
+    fread(text, 1, filesize, fh);
 
     return text;
 }

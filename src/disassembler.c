@@ -176,7 +176,7 @@ void disassemble (unsigned char * bin, int bin_size) {
 }
 
 int main (int argc, char * argv[]) {
-    int filesize, bytes_read;
+    int filesize;
     unsigned char * buf = NULL;
     FILE * fh;
     
@@ -197,7 +197,7 @@ int main (int argc, char * argv[]) {
 
     buf = (unsigned char *) malloc(filesize);
 
-    bytes_read = fread(buf, 1, filesize, fh);
+    fread(buf, 1, filesize, fh);
 
     disassemble(buf, filesize);
     

@@ -45,11 +45,10 @@ void god_mode_draw (struct _vm * vm) {
     unsigned int word;
     unsigned short c;
     unsigned short color;
-    int line_width, offset, y, x;
+    int offset, y, x;
     
     //clear();
     
-    line_width = COLS / 9;
     offset = 0;
     // start by drawing memory to the screen
     for (y = 0; y < LINES - 3; y++) {
