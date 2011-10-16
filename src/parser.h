@@ -10,7 +10,7 @@
 #include "parameter_list.h"
 #include "vm.h"
 
-#define PARSER_RULES 43
+#define PARSER_RULES 44
 #define PARSER_RULES_NONTERMS 64
 #define PARSER_REGISTERS 10
 
@@ -33,8 +33,8 @@
 #define RULE_JG    13
 #define RULE_CALL  14
 #define RULE_RET   15
-#define RULE_PUSH  16
-#define RULE_POP   17
+#define RULE_PUSHR 16
+#define RULE_POPR  17
 #define RULE_CMPR  18
 #define RULE_CMPC  19
 #define RULE_HLT   20
@@ -60,6 +60,7 @@
 #define RULE_MOVLA 40
 #define RULE_MOVLB 41
 #define RULE_MOVSB 42
+#define RULE_PUSHC 43
 
 struct _instruction {
     unsigned char op;

@@ -20,8 +20,8 @@ int rules[PARSER_RULES][PARSER_RULES_NONTERMS] = {
     {TOKEN_JG,  TOKEN_LABEL, -1},                                   // RULE_JG
     {TOKEN_CALL, TOKEN_LABEL, -1},                                  // RULE_CALL
     {TOKEN_RET, -1},                                                // RULE_RET
-    {TOKEN_PUSH, TOKEN_REG, -1},                                    // RULE_PUSH
-    {TOKEN_POP, TOKEN_REG, -1},                                     // RULE_POP
+    {TOKEN_PUSH, TOKEN_REG, -1},                                    // RULE_PUSHR
+    {TOKEN_POP, TOKEN_REG, -1},                                     // RULE_POPR
     {TOKEN_CMP, TOKEN_REG, TOKEN_SEPERATOR, TOKEN_REG, -1},         // RULE_CMPR
     {TOKEN_CMP, TOKEN_REG, TOKEN_SEPERATOR, TOKEN_CONSTANT, -1},    // RULE_CMPC
     {TOKEN_HLT, -1},                                                // RULE_HLT
@@ -48,7 +48,8 @@ int rules[PARSER_RULES][PARSER_RULES_NONTERMS] = {
     {TOKEN_MOV, TOKEN_REG, TOKEN_SEPERATOR, TOKEN_BYTE, TOKEN_BRACKET_OPEN,
                 TOKEN_REG, TOKEN_BRACKET_CLOSE, -1},                // RULE_MOVLB
     {TOKEN_MOV, TOKEN_BYTE, TOKEN_BRACKET_OPEN, TOKEN_REG, TOKEN_BRACKET_CLOSE,
-                TOKEN_SEPERATOR, TOKEN_REG, -1}                     // RULE_MOVSB
+                TOKEN_SEPERATOR, TOKEN_REG, -1},                    // RULE_MOVSB
+    {TOKEN_PUSH, TOKEN_CONSTANT, -1}                                // RULE_PUSHC
 };
 
 
@@ -69,8 +70,8 @@ unsigned char rule_to_assembler_op [] = {
     OP_JG,   // RULE_JG
     OP_CALL, // RULE_CALL
     OP_RET,  // RULE_RET
-    OP_PUSH, // RULE_PUSH
-    OP_POP,  // RULE_POP
+    OP_PUSHR,// RULE_PUSHR
+    OP_POPR, // RULE_POPR
     OP_CMPR, // RULE_CMPR
     OP_CMPC, // RULE_CMPC
     OP_HLT,  // RULE_HLT
@@ -95,7 +96,8 @@ unsigned char rule_to_assembler_op [] = {
     OP_CMPC, // RULE_CMPL
     OP_MOVC, // RULE_MOVLA
     OP_MOVLB,// RULE_MOVLB
-    OP_MOVSB // RULE_MOVSB
+    OP_MOVSB,// RULE_MOVSB
+    OP_PUSHC,// RULE_PUSHC
 };
 
 
@@ -224,10 +226,14 @@ struct _instruction * parser_instruction (int rule,
             instruction->label = label_get(&(parser->labels), token_stack[3]->text);
             instruction->size = 6;
             break;
-        case RULE_PUSH :
-        case RULE_POP :
+        case RULE_PUSHR :
+        case RULE_POPR :
             instruction->rd = parser_token_to_assembler_reg(token_stack[1]->type);
             instruction->size = 2;
+            break;
+        case RULE_PUSHC :
+            instruction->constant = token_stack[1]->constant;
+            instruction->size = 5;
             break;
         default :
             instruction->size = 1;

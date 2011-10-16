@@ -40,8 +40,9 @@
 #define OP_JG    0x23
 #define OP_CALL  0x30
 #define OP_RET   0x31
-#define OP_PUSH  0x32
-#define OP_POP   0x33
+#define OP_PUSHR 0x32
+#define OP_POPR  0x33
+#define OP_PUSHC 0x34
 #define OP_CMPR  0x40
 #define OP_CMPC  0x41
 #define OP_HLT   0x80

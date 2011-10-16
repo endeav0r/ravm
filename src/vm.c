@@ -165,36 +165,36 @@ int vm_run (struct _vm * vm) {
             }
             break;
             // |op|co|ns|ta|nt|
-            case OP_JMP  :
-            case OP_JE   :
-            case OP_JG   :
-            case OP_JZ   :
-            case OP_CALL :
+            case OP_JMP   :
+            case OP_JE    :
+            case OP_JG    :
+            case OP_JZ    :
+            case OP_CALL  :
+            case OP_PUSHC :
                 constant = 0x00000000;
                 constant |= vm->memory[vm->IP++] << 24;
                 constant |= vm->memory[vm->IP++] << 16;
                 constant |= vm->memory[vm->IP++] << 8;
                 constant |= vm->memory[vm->IP++];
                 switch (op) {
-                    // jmp
                     case OP_JMP :
                         vm->IP += constant;
                         break;
-                    // je
-                    // jz
                     case OP_JE :
                     case OP_JZ :
                         if (vm->FLAGS == 0) vm->IP += constant;
                         break;
-                    // jg
                     case OP_JG :
                         if (vm->FLAGS > 0) vm->IP += constant;
                         break;
-                    // call
                     case OP_CALL :
                         vm->reg[RSP] -= 4;
                         vm->memory[vm->reg[RSP]] = vm->IP;
                         vm->IP += constant;
+                        break;
+                    case OP_PUSHC :
+                        vm->reg[RSP] -= 4;
+                        *((int*) &(vm->memory[vm->reg[RSP]])) = constant;
                         break;
                 }
                 break;
@@ -245,17 +245,15 @@ int vm_run (struct _vm * vm) {
                 }
                 break;
             // |op|rs|
-            case OP_PUSH :
-            case OP_POP :
+            case OP_PUSHR :
+            case OP_POPR :
                 rs = vm->memory[vm->IP++];
                 switch (op) {
-                    // push
-                    case OP_PUSH :
+                    case OP_PUSHR :
                         vm->reg[RSP] -= 4;
                         *((int*) &(vm->memory[vm->reg[RSP]])) = (int) vm->reg[rs];
                         break;
-                    // pop
-                    case OP_POP :
+                    case OP_POPR :
                         vm->reg[rs] = *((int*) &(vm->memory[vm->reg[RSP]]));
                         vm->reg[RSP] += 4;
                         break;

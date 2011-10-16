@@ -100,13 +100,14 @@ int debug_instruction_size (const unsigned char instruction) {
         case OP_JE :
         case OP_JG :
         case OP_CALL :
+        case OP_PUSHC :
             return 5;
         case OP_RET :
         case OP_HLT :
         case OP_NOP :
             return 1;
-        case OP_PUSH :
-        case OP_POP :
+        case OP_PUSHR :
+        case OP_POPR :
             return 2;
     }
     //fprintf(stderr, "invalid instruction to debug_instruction_size %d\n",
@@ -178,10 +179,11 @@ const char * debug_instruction_description (const unsigned char * instruction) {
         case OP_RET :
             strcpy(instruction_description, "RET ");
             break;
-        case OP_PUSH :
+        case OP_PUSHR :
+        case OP_PUSHC :
             strcpy(instruction_description, "PUSH ");
             break;
-        case OP_POP :
+        case OP_POPR :
             strcpy(instruction_description, "POP ");
             break;
         case OP_CMPR :
@@ -223,8 +225,8 @@ const char * debug_instruction_description (const unsigned char * instruction) {
             sprintf(tmp, ", %d", b2lendian(*((int*)&(instruction[2]))));
             strcat(instruction_description, tmp);
             break;
-        case OP_PUSH :
-        case OP_POP :
+        case OP_PUSHR :
+        case OP_POPR :
             strcat(instruction_description, debug_register_description(instruction[1]));
             break;
         case OP_MOVL :
@@ -256,6 +258,7 @@ const char * debug_instruction_description (const unsigned char * instruction) {
         case OP_JE :
         case OP_JG :
         case OP_CALL :
+        case OP_PUSHC :
             sprintf(tmp, "%d", b2lendian(*((int*)&(instruction[1]))));
             strcat(instruction_description, tmp);
             break;

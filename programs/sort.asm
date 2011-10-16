@@ -5,10 +5,7 @@ main :
     ; get locations of words
     mov r0, words
     
-    ; set number of words
-    mov r1, 8
-    
-    push r1
+    push 8 ; number of words
     push r0
     call bubble_sort
     add rsp, 8 ; take call arguments off stack

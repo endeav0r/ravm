@@ -84,10 +84,11 @@ void disassemble (unsigned char * bin, int bin_size) {
                 case OP_RET :
                     printf("RET  ");
                     break;
-                case OP_PUSH :
+                case OP_PUSHR :
+                case OP_PUSHC :
                     printf("PUSH ");
                     break;
-                case OP_POP :
+                case OP_POPR :
                     printf("POP  ");
                     break;
                 case OP_CMPR :
@@ -133,8 +134,8 @@ void disassemble (unsigned char * bin, int bin_size) {
                     sprintf(tmp, "%d (%08x)", constant, ip + constant);
                     printf("%s", tmp);
                     break;
-                case OP_PUSH :
-                case OP_POP :
+                case OP_PUSHR :
+                case OP_POPR :
                     printf("%s", debug_register_description(bin[ip+1]));
                     break;
                 case OP_MOVL :
@@ -158,6 +159,7 @@ void disassemble (unsigned char * bin, int bin_size) {
                 case OP_JE :
                 case OP_JG :
                 case OP_CALL :
+                case OP_PUSHC :
                     constant  = ((int) bin[ip+1]) << 24;
                     constant |= ((int) bin[ip+2]) << 16;
                     constant |= ((int) bin[ip+3]) << 8;

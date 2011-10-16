@@ -138,9 +138,13 @@ int assemble (struct _parser * parser, const char * filename) {
                 endian_tmp = l2bendian(label->location - instruction->location - 5);
                 fwrite(&endian_tmp, 4, 1, fh);
                 break;
-            case OP_PUSH :
-            case OP_POP :
+            case OP_PUSHR :
+            case OP_POPR :
                 fwrite(&(instruction->rd), 1, 1, fh);
+                break;
+            case OP_PUSHC :
+                endian_tmp = l2bendian(instruction->constant);
+                fwrite(&endian_tmp, 4, 1, fh);
                 break;
         }
         instruction = instruction->next;
