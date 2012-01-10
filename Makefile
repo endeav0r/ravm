@@ -6,8 +6,9 @@ SRC_DIR = src/
 all : vm assembler disassembler
 
 vm : $(SRC_DIR)debug.o $(SRC_DIR)image.o $(SRC_DIR)vm.o $(SRC_DIR)god_mode.o
-	$(CC) $(C_FLAGS) -lncurses -o vm \
-	$(SRC_DIR)debug.o $(SRC_DIR)image.o $(SRC_DIR)vm.o $(SRC_DIR)god_mode.o
+	$(CC) $(C_FLAGS) -o vm \
+	$(SRC_DIR)debug.o $(SRC_DIR)image.o $(SRC_DIR)vm.o $(SRC_DIR)god_mode.o \
+	-lncurses
 
 disassembler : $(SRC_DIR)disassembler.o $(SRC_DIR)debug.o
 	$(CC) $(C_FLAGS) -o disassembler \
